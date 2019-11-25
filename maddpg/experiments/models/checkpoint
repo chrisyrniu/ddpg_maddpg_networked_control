@@ -1,0 +1,2 @@
+model_checkpoint_path: "simple_world_comm"
+all_model_checkpoint_paths: "simple_world_comm"
