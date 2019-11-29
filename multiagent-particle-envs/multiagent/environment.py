@@ -97,7 +97,7 @@ class MultiAgentEnv(gym.Env):
             info_n['n'].append(self._get_info(agent))
 
         # all agents get total reward in cooperative case
-        reward = np.sum(reward_n)
+        reward = np.sum(reward_n) / self.n
         if self.shared_reward:
             reward_n = [reward] * self.n
 
