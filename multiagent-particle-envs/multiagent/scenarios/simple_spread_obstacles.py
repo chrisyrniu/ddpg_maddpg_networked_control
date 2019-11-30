@@ -2,9 +2,9 @@ import numpy as np
 from multiagent.core import World, Agent, Landmark
 from multiagent.scenario import BaseScenario
 
-size_agents = 0.15
+size_agents = 0.10
 size_landmarks = 0.05
-size_obstacles = 0.20
+size_obstacles = 0.15
 
 class Scenario(BaseScenario):
     def make_world(self):
@@ -88,13 +88,14 @@ class Scenario(BaseScenario):
                     occupied_landmarks += 1
         if agent.collide:
             for a in world.agents:
+                if a is agent: continue
                 if self.is_collision_agent(a, agent):
-                    rew -= 1
+                    rew -= 10
                     collisions += 1
             for b in world.obstacles:
                 if b.collide:
                     if self.is_collision_obstacle(b, agent):
-                        rew -= 1
+                        rew -= 10
                         collisions += 1
         return (rew, collisions, min_dists, occupied_landmarks)
 
@@ -103,13 +104,13 @@ class Scenario(BaseScenario):
         delta_pos = agent1.state.p_pos - agent2.state.p_pos
         dist = np.sqrt(np.sum(np.square(delta_pos)))
         dist_min = agent1.size + agent2.size
-        return True if dist < dist_min else False
+        return True if dist < dist_min + 0.01 else False
 
     def is_collision_obstacle(self, agent, obstacle):
         delta_pos = agent.state.p_pos - obstacle.state.p_pos
         dist = np.sqrt(np.sum(np.square(delta_pos)))
         dist_min = agent.size + obstacle.size
-        return True if dist < dist_min else False
+        return True if dist < dist_min + 0.02 else False
 
     def reward(self, agent, world):
         # Agents are rewarded based on minimum agent distance to each landmark, penalized for collisions
@@ -120,13 +121,20 @@ class Scenario(BaseScenario):
                 rew -= min(dists)
         if agent.collide:
             for a in world.agents:
+                if a is agent: continue
                 if self.is_collision_agent(a, agent):
-                    rew -= 1
+                    rew -= 6
             for b in world.obstacles:
                 if b.collide:
                     if self.is_collision_obstacle(b, agent):
-                        rew -= 1
+                        rew -= 8
         return rew
+        
+    def plot_data(self, world):
+        plot_data = []
+        plot_data.append([world.agents[i].state.p_pos[0] for i in range(len(world.agents))])
+        plot_data.append([world.landmarks[i].state.p_pos[0] for i in range(len(world.landmarks))])
+        return plot_data
 
     def observation(self, agent, world):
         # get positions of all entities in this agent's reference frame
