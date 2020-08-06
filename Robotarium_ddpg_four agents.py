@@ -1,9 +1,9 @@
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import math
 import random
 import sys
-sys.path.append('c:\\Users\\Qian Luo\\Desktop\\network project\\robotarium_python_simulator-master')
+sys.path.append('D:\\Github\\ddpg_maddpg_networked_control\\robotarium_python_simulator-master')
 
 import rps.robotarium as robotarium
 from rps.utilities.transformations import *
@@ -21,6 +21,7 @@ GAMMA = 0.9     # reward discount
 TAU = 0.01      # soft replacement
 MEMORY_CAPACITY = 800
 BATCH_SIZE = 32
+tf.disable_v2_behavior()
 
 
 class DDPG(object):
